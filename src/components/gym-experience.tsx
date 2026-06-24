@@ -43,6 +43,16 @@ const navItems = [
   { label: "Planes", href: "#planes" },
 ];
 
+const marqueeItems = [
+  "Fuerza guiada",
+  "Cardio inteligente",
+  "Coaches en piso",
+  "Planes sin matrícula",
+  "Abierto desde 5:20 a.m.",
+];
+
+const marqueeGroupItems = Array.from({ length: 4 }, () => marqueeItems).flat();
+
 const goals = [
   {
     id: "strength",
@@ -71,10 +81,10 @@ const goals = [
 ];
 
 const methodSteps = [
-  { number: "01", title: "Diagnóstico", text: "Conocemos tu punto de partida, historial y objetivo real." },
-  { number: "02", title: "Plan", text: "Diseñamos una ruta sostenible, específica y medible." },
-  { number: "03", title: "Coaching", text: "Corriges técnica, ajustas cargas y nunca entrenas a ciegas." },
-  { number: "04", title: "Evolución", text: "Revisamos datos y elevamos el reto cuando tu cuerpo responde." },
+  { number: "01", title: "Diagnóstico", text: "Medimos tu punto de partida y definimos un objetivo realista.", focus: "Evaluación inicial", icon: Target },
+  { number: "02", title: "Plan", text: "Armamos una ruta semanal con cargas, bloques y descansos claros.", focus: "Ruta personalizada", icon: Dumbbell },
+  { number: "03", title: "Coaching", text: "Ajustamos técnica en piso para que avances sin entrenar a ciegas.", focus: "Corrección constante", icon: ShieldCheck },
+  { number: "04", title: "Evolución", text: "Revisamos resultados y elevamos el reto cuando tu cuerpo responde.", focus: "Progreso medible", icon: Trophy },
 ];
 
 const classes = [
@@ -308,7 +318,6 @@ export function GymExperience() {
   const prefersReducedMotion = !SITE_MOTION_ENABLED;
   const [menuOpen, setMenuOpen] = useState(false);
   const [soundOn, setSoundOn] = useState(false);
-  const [selectedGoal, setSelectedGoal] = useState(goals[0].id);
   const [selectedDay, setSelectedDay] = useState<keyof typeof schedule>("Lun");
   const [coachModalId, setCoachModalId] = useState<string | null>(null);
   const [quarterly, setQuarterly] = useState(false);
@@ -485,9 +494,28 @@ export function GymExperience() {
                 <a className="button button--large" href="#experiencia">Vive 7 días gratis <ArrowRight /></a>
                 <a className="text-link" href="#metodo"><Play aria-hidden="true" /> Descubre el método</a>
               </div>
+              <div className="hero__rating">
+                <div className="stars" aria-hidden="true">{Array.from({ length: 5 }).map((_, index) => <Star key={index} />)}</div>
+                <strong>4.9 promedio</strong>
+                <span>+380 reseñas verificadas</span>
+              </div>
             </motion.div>
           </div>
         </section>
+
+        <div className="announcement" aria-label="Beneficios de Gym Rat Club">
+          <div className="marquee">
+            <div className="marquee__track">
+              {Array.from({ length: 2 }).map((_, groupIndex) => (
+                <div key={groupIndex} className="marquee__group" aria-hidden={groupIndex === 1}>
+                  {marqueeGroupItems.map((item, itemIndex) => (
+                    <span key={`${groupIndex}-${itemIndex}-${item}`}>{item}</span>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
 
         <section className="section goals" id="objetivos">
           <div className="container">
@@ -496,21 +524,21 @@ export function GymExperience() {
               <div className="goals__cards" role="list">
                 {goals.map((goal, index) => {
                   const Icon = goal.icon;
-                  const active = selectedGoal === goal.id;
                   return (
                     <Reveal key={goal.id} delay={index * 0.055} direction={index % 2 === 0 ? "left" : "right"}>
-                      <button className={`goal-card ${active ? "is-active" : ""}`} type="button" onClick={() => setSelectedGoal(goal.id)} aria-pressed={active}>
+                      <article className="goal-card" role="listitem">
                         <span className="goal-card__icon"><Icon aria-hidden="true" /></span>
                         <strong>{goal.title}</strong>
                         <span>{goal.caption}</span>
                         <ArrowRight className="goal-card__arrow" aria-hidden="true" />
-                      </button>
+                      </article>
                     </Reveal>
                   );
                 })}
               </div>
               <Reveal className="goals__visual" direction="scale">
                 <Image src="/media/club.webp" alt="Sala principal de Gym Rat Club con equipamiento de fuerza" fill sizes="(max-width: 900px) 92vw, 42vw" />
+                <a className="goals__visual-cta button" href="#experiencia">Comenzar el cambio <ArrowRight aria-hidden="true" /></a>
               </Reveal>
             </div>
           </div>
@@ -519,16 +547,37 @@ export function GymExperience() {
         <section className="section method" id="metodo">
           <div className="method__word" aria-hidden="true">MÉTODO</div>
           <div className="container">
-            <Reveal direction="right"><SectionHeading eyebrow="Sistema Gym Rat" title={<>De improvisar<br />a <span>progresar.</span></>} copy="Cada sesión tiene una razón. Cada ajuste responde a tus datos. Cada avance se convierte en el nuevo punto de partida." /></Reveal>
-            <div className="method__steps">
-              {methodSteps.map((step, index) => (
-                <Reveal key={step.number} className="method-step" delay={index * 0.055} direction={index % 2 === 0 ? "left" : "right"}>
-                  <div><h3>{step.title}</h3><p>{step.text}</p></div>{index < methodSteps.length - 1 ? <ChevronRight aria-hidden="true" /> : <Trophy aria-hidden="true" />}
-                </Reveal>
-              ))}
+            <div className="method__header">
+              <Reveal direction="right"><SectionHeading eyebrow="Sistema Gym Rat" title={<>De improvisar<br />a <span>progresar.</span></>} copy="Cada sesión tiene una razón. Cada ajuste responde a tus datos. Cada avance se convierte en el nuevo punto de partida." /></Reveal>
+              <Reveal className="method__summary" direction="scale">
+                <span>Método guiado</span>
+                <strong>4 fases para entrenar con dirección.</strong>
+                <p>Evaluación, plan, coaching y seguimiento en un flujo simple para saber qué hacer y por qué hacerlo.</p>
+                <a href="#experiencia">Agendar evaluación <ArrowRight aria-hidden="true" /></a>
+              </Reveal>
+            </div>
+            <div className="method__steps" role="list">
+              {methodSteps.map((step, index) => {
+                const Icon = step.icon;
+                return (
+                  <Reveal key={step.number} className="method-step" delay={index * 0.055} direction={index % 2 === 0 ? "left" : "right"}>
+                    <article role="listitem">
+                      <div className="method-step__top">
+                        <span>{step.number}</span>
+                        <Icon aria-hidden="true" />
+                      </div>
+                      <div>
+                        <h3>{step.title}</h3>
+                        <p>{step.text}</p>
+                      </div>
+                      <small>{step.focus}</small>
+                    </article>
+                  </Reveal>
+                );
+              })}
             </div>
             <Reveal className="method__promise" direction="scale">
-              <div><ShieldCheck aria-hidden="true" /><span>Si en 30 días no sientes un cambio en tu energía, técnica o rendimiento, revisamos tu plan uno a uno.</span></div>
+              <div><ShieldCheck aria-hidden="true" /><span><strong>Garantía de ajuste.</strong> Si en 30 días no sientes un cambio en tu energía, técnica o rendimiento, revisamos tu plan uno a uno.</span></div>
               <a href="#experiencia">Empezar mi evaluación <ArrowRight /></a>
             </Reveal>
           </div>
